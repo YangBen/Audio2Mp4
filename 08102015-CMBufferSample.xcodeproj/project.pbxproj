@@ -14,6 +14,9 @@
 		DECCE0DE1B783551003836F0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DECCE0DD1B783551003836F0 /* Images.xcassets */; };
 		DECCE0E11B783551003836F0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DECCE0DF1B783551003836F0 /* LaunchScreen.xib */; };
 		DECCE0ED1B783551003836F0 /* _8102015_CMBufferSampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DECCE0EC1B783551003836F0 /* _8102015_CMBufferSampleTests.m */; };
+		DECCE0F81B7839E7003836F0 /* Hello.m4r in Resources */ = {isa = PBXBuildFile; fileRef = DECCE0F71B783710003836F0 /* Hello.m4r */; };
+		DECCE0F91B7839EA003836F0 /* output.pcm in Resources */ = {isa = PBXBuildFile; fileRef = DECCE0F61B78370B003836F0 /* output.pcm */; };
+		DECCE0FB1B783C1D003836F0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DECCE0FA1B783C1D003836F0 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +43,10 @@
 		DECCE0E61B783551003836F0 /* 08102015-CMBufferSampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "08102015-CMBufferSampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DECCE0EB1B783551003836F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DECCE0EC1B783551003836F0 /* _8102015_CMBufferSampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _8102015_CMBufferSampleTests.m; sourceTree = "<group>"; };
+		DECCE0F61B78370B003836F0 /* output.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = output.pcm; sourceTree = "<group>"; };
+		DECCE0F71B783710003836F0 /* Hello.m4r */ = {isa = PBXFileReference; lastKnownFileType = file; path = Hello.m4r; sourceTree = "<group>"; };
+		DECCE0FA1B783C1D003836F0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		DECCE0FC1B783D95003836F0 /* CutLove.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = CutLove.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DECCE0FB1B783C1D003836F0 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +71,7 @@
 		DECCE0C41B783551003836F0 = {
 			isa = PBXGroup;
 			children = (
+				DECCE0FA1B783C1D003836F0 /* AVFoundation.framework */,
 				DECCE0CF1B783551003836F0 /* 08102015-CMBufferSample */,
 				DECCE0E91B783551003836F0 /* 08102015-CMBufferSampleTests */,
 				DECCE0CE1B783551003836F0 /* Products */,
@@ -81,6 +90,9 @@
 		DECCE0CF1B783551003836F0 /* 08102015-CMBufferSample */ = {
 			isa = PBXGroup;
 			children = (
+				DECCE0FC1B783D95003836F0 /* CutLove.mp3 */,
+				DECCE0F71B783710003836F0 /* Hello.m4r */,
+				DECCE0F61B78370B003836F0 /* output.pcm */,
 				DECCE0D41B783551003836F0 /* AppDelegate.h */,
 				DECCE0D51B783551003836F0 /* AppDelegate.m */,
 				DECCE0D71B783551003836F0 /* ViewController.h */,
@@ -201,6 +213,8 @@
 			files = (
 				DECCE0DC1B783551003836F0 /* Main.storyboard in Resources */,
 				DECCE0E11B783551003836F0 /* LaunchScreen.xib in Resources */,
+				DECCE0F81B7839E7003836F0 /* Hello.m4r in Resources */,
+				DECCE0F91B7839EA003836F0 /* output.pcm in Resources */,
 				DECCE0DE1B783551003836F0 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -418,6 +432,7 @@
 				DECCE0F21B783551003836F0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DECCE0F31B783551003836F0 /* Build configuration list for PBXNativeTarget "08102015-CMBufferSampleTests" */ = {
 			isa = XCConfigurationList;
@@ -426,6 +441,7 @@
 				DECCE0F51B783551003836F0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
