@@ -52,7 +52,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="actionPcm2Mp4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CPv-s3-yE4"/>
+                                    <action selector="actionLpcm2Mp4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="GJH-xg-Inb"/>
                                 </connections>
                             </button>
                         </subviews>
