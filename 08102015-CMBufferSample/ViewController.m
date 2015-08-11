@@ -21,7 +21,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
+}
+
+// Audio File to Mp4
+- (IBAction)actionAF2Mp4:(id)sender {
     NSError *error;
     //------------------------------------------------------------------------------------ Gen Data
     
@@ -61,8 +64,8 @@
     
     //------------------------------------------------------------------------------------ Read Data
     CMSampleBufferRef sampleBR;
-//    sampleBR = [astRTO copyNextSampleBuffer];
-//    NSLog(@"Mark0810: sampleBR %@", sampleBR);
+    //    sampleBR = [astRTO copyNextSampleBuffer];
+    //    NSLog(@"Mark0810: sampleBR %@", sampleBR);
     
     //------------------------------------------------------------------------------------ Gen Out.mp4
     NSURL *fileDir = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
@@ -131,6 +134,7 @@
     [_player.view setFrame:self.view.bounds];
     [self.view addSubview:_player.view];
     [_player play];
+
 }
 
 - (void)didReceiveMemoryWarning {
