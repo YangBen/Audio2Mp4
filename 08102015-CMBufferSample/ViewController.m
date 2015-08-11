@@ -23,6 +23,85 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 
+
+- (IBAction)actionPcm2Mp4:(id)sender {
+}
+
+// Audio File convert to LinearPCM file
+- (IBAction)actionAF2Lpcm:(id)sender {
+    NSError *error;
+    //------------------------------------------------------------------------------------ Gen Data
+    
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Hello" ofType:@"m4r"];
+    NSLog(@"Mark0810: path %@", filePath);
+    
+    NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
+    AVAsset *ast = [AVAsset assetWithURL:fileUrl];
+    NSLog(@"Mark0810: ast %@", ast);
+    
+    AVAssetReader *astR = [AVAssetReader assetReaderWithAsset:ast error:&error];
+    if (!astR) {
+        NSLog(@"Mark0810: astR %@", error);
+        exit(1);
+    }
+    NSLog(@"Mark0810: astR %@", astR);
+    
+    //------------------------------------------------------------------------------------  Create Reader
+    AVAssetReaderTrackOutput *astRTO;
+    __block AVAssetTrack *astT;
+    NSDictionary *outputSettings;
+    
+    NSLog(@"Mark0810: astTs %@", ast.tracks);
+    astT = [[ast tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    outputSettings = @{AVFormatIDKey : [NSNumber numberWithUnsignedInt:kAudioFormatLinearPCM]};
+    
+    astRTO = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:astT outputSettings:outputSettings];
+    NSLog(@"Mark0810: astRTO %@", astRTO);
+    
+    if (![astR canAddOutput:astRTO]) {
+        exit(3);
+    }
+    [astR addOutput:astRTO];
+    NSLog(@"Mark0810: astRTO %@", astR);
+    
+    [astR startReading];
+    
+    //------------------------------------------------------------------------------------ Read Data
+    CMSampleBufferRef sampleBR;
+    CMBlockBufferRef blockBR;
+    char tmp[32768] = {0};
+    NSData *tmpData = nil;
+    size_t tmpLength = 0;
+    NSURL *fileDir = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *fileUrl2 = [fileDir URLByAppendingPathComponent:@"test.pcm"];
+    
+    NSLog(@"Mark0810: url2 %@", fileUrl2);
+    if ([[NSFileManager defaultManager] fileExistsAtPath:fileUrl2.path]) {
+        [[NSFileManager defaultManager] removeItemAtPath:fileUrl2.path error:&error];
+        NSLog(@"Mark0810: remove %@", error);
+    };
+    [[NSFileManager defaultManager] createFileAtPath:fileUrl2.path contents:nil attributes:nil];
+    NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:fileUrl2.path];
+    
+    while ((sampleBR = [astRTO copyNextSampleBuffer])) {
+        blockBR = CMSampleBufferGetDataBuffer(sampleBR);
+        tmpLength = CMBlockBufferGetDataLength(blockBR);
+        NSLog(@"Mark0811: Loop %zu", tmpLength);
+        CMBlockBufferCopyDataBytes(blockBR, 0, tmpLength, tmp);
+        tmpData = [NSData dataWithBytes:tmp length:tmpLength];
+        [fileHandle writeData:tmpData];
+        
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            NSLog(@"Mark0811: sample %@", tmpData);
+        });
+    }
+    [fileHandle closeFile];
+    NSLog(@"Mark0811: Read End");
+    
+    return;
+}
+
 // Audio File to Mp4
 - (IBAction)actionAF2Mp4:(id)sender {
     NSError *error;

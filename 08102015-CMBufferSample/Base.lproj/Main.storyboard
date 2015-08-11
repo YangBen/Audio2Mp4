@@ -17,12 +17,42 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="doj-hC-aPM">
-                                <rect key="frame" x="16" y="20" width="288" height="30"/>
+                                <rect key="frame" x="16" y="20" width="283" height="30"/>
                                 <state key="normal" title="Read data from audio file, Write to a mp4">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="actionAF2Mp4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lpk-zp-0iJ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F80-VG-TbT">
+                                <rect key="frame" x="16" y="58" width="285" height="30"/>
+                                <state key="normal" title="Read data from audiio file, Write to a pcm">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="actionAF2Lpcm:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WlW-Fr-MlZ"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Open Terminal, Use FFplay tool to play pcm file generated." lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wiH-Eb-3jW">
+                                <rect key="frame" x="34" y="96" width="265" height="52"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="# ffplay -f s16le -ar 44100 -acodec pcm_s16le -ac 2 test.pcm" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gqq-VN-i44">
+                                <rect key="frame" x="34" y="156" width="265" height="46"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XgS-Fj-StQ">
+                                <rect key="frame" x="16" y="210" width="261" height="30"/>
+                                <state key="normal" title="Read Raw LinearPCM, Write to a mp4">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="actionPcm2Mp4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CPv-s3-yE4"/>
                                 </connections>
                             </button>
                         </subviews>

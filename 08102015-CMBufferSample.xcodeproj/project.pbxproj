@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE689F531B79AF13002B1578 /* Hello.pcm in Resources */ = {isa = PBXBuildFile; fileRef = DE689F521B79AF13002B1578 /* Hello.pcm */; };
 		DECCE0D31B783551003836F0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DECCE0D21B783551003836F0 /* main.m */; };
 		DECCE0D61B783551003836F0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DECCE0D51B783551003836F0 /* AppDelegate.m */; };
 		DECCE0D91B783551003836F0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DECCE0D81B783551003836F0 /* ViewController.m */; };
@@ -15,7 +16,6 @@
 		DECCE0E11B783551003836F0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DECCE0DF1B783551003836F0 /* LaunchScreen.xib */; };
 		DECCE0ED1B783551003836F0 /* _8102015_CMBufferSampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DECCE0EC1B783551003836F0 /* _8102015_CMBufferSampleTests.m */; };
 		DECCE0F81B7839E7003836F0 /* Hello.m4r in Resources */ = {isa = PBXBuildFile; fileRef = DECCE0F71B783710003836F0 /* Hello.m4r */; };
-		DECCE0F91B7839EA003836F0 /* output.pcm in Resources */ = {isa = PBXBuildFile; fileRef = DECCE0F61B78370B003836F0 /* output.pcm */; };
 		DECCE0FB1B783C1D003836F0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DECCE0FA1B783C1D003836F0 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +30,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DE689F521B79AF13002B1578 /* Hello.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Hello.pcm; sourceTree = "<group>"; };
+		DE689F541B79B0C1002B1578 /* fileCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fileCheck.png; sourceTree = "<group>"; };
 		DECCE0CD1B783551003836F0 /* 08102015-CMBufferSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "08102015-CMBufferSample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DECCE0D11B783551003836F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DECCE0D21B783551003836F0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -43,7 +45,6 @@
 		DECCE0E61B783551003836F0 /* 08102015-CMBufferSampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "08102015-CMBufferSampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DECCE0EB1B783551003836F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DECCE0EC1B783551003836F0 /* _8102015_CMBufferSampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _8102015_CMBufferSampleTests.m; sourceTree = "<group>"; };
-		DECCE0F61B78370B003836F0 /* output.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = output.pcm; sourceTree = "<group>"; };
 		DECCE0F71B783710003836F0 /* Hello.m4r */ = {isa = PBXFileReference; lastKnownFileType = file; path = Hello.m4r; sourceTree = "<group>"; };
 		DECCE0FA1B783C1D003836F0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		DECCE0FC1B783D95003836F0 /* CutLove.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = CutLove.mp3; sourceTree = "<group>"; };
@@ -90,9 +91,10 @@
 		DECCE0CF1B783551003836F0 /* 08102015-CMBufferSample */ = {
 			isa = PBXGroup;
 			children = (
+				DE689F541B79B0C1002B1578 /* fileCheck.png */,
 				DECCE0FC1B783D95003836F0 /* CutLove.mp3 */,
 				DECCE0F71B783710003836F0 /* Hello.m4r */,
-				DECCE0F61B78370B003836F0 /* output.pcm */,
+				DE689F521B79AF13002B1578 /* Hello.pcm */,
 				DECCE0D41B783551003836F0 /* AppDelegate.h */,
 				DECCE0D51B783551003836F0 /* AppDelegate.m */,
 				DECCE0D71B783551003836F0 /* ViewController.h */,
@@ -215,8 +217,8 @@
 				DECCE0DC1B783551003836F0 /* Main.storyboard in Resources */,
 				DECCE0E11B783551003836F0 /* LaunchScreen.xib in Resources */,
 				DECCE0F81B7839E7003836F0 /* Hello.m4r in Resources */,
-				DECCE0F91B7839EA003836F0 /* output.pcm in Resources */,
 				DECCE0DE1B783551003836F0 /* Images.xcassets in Resources */,
+				DE689F531B79AF13002B1578 /* Hello.pcm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
