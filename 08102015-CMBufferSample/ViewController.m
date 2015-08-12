@@ -26,7 +26,190 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 
+// Read Data from png file, write it to a mp4
+- (IBAction)actionPng2Mp4:(id)sender {
+    //------------------------------------------------------------------------------------ read png
+    UIImage *image = [UIImage imageNamed:@"test.png"];
+    CGImageRef cgImg = [image CGImage];
+    
+    //------------------------------------------------------------------------------------ create CVPixelBufferRef
+    CVPixelBufferRef pixelBR;
+//    CVReturn cvr = CVPixelBufferCreate(kCFAllocatorDefault, 100, 100, kCVPixelFormatType_32ARGB, NULL, &pixelBR);  // this method get wrong bytesPerRow.
+    char pixelTmpBuffer[4*100*100] = {0};
+    CVReturn cvr = CVPixelBufferCreateWithBytes(kCFAllocatorDefault, 100, 100, kCVPixelFormatType_32ARGB, pixelTmpBuffer, 4*100, NULL, NULL, NULL, &pixelBR);
+    NSLog(@"Mark0812: cvr %d %@", cvr, pixelBR);
+    
+    
+    //------------------------------------------------------------------------------------ Write data to a frame
+    CVPixelBufferLockBaseAddress(pixelBR, 0);
+    void *pixelBA = CVPixelBufferGetBaseAddress(pixelBR);
+    CGColorSpaceRef colorSR = CGColorSpaceCreateDeviceRGB();
+    CGContextRef contextR = CGBitmapContextCreate(pixelBA, 100, 100, 8, 4 * 100, colorSR, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrderDefault);
+    CGContextDrawImage(contextR, CGRectMake(0, 0, CGImageGetWidth(cgImg), CGImageGetHeight(cgImg)), cgImg);
+    CGColorSpaceRelease(colorSR);
+    CGContextRelease(contextR);
+    NSData *tmpData = [NSData dataWithBytes:pixelBA length:4 * 100 * 100];
+    NSLog(@"Mark0812: imgData [%lu]%@",(unsigned long)tmpData.length, tmpData);
+    CVPixelBufferUnlockBaseAddress(pixelBR, 0);
+    
+    size_t pixelBPR = CVPixelBufferGetBytesPerRow(pixelBR);
+    size_t pixelSize = CVPixelBufferGetDataSize(pixelBR);
+    size_t pixelH = CVPixelBufferGetHeight(pixelBR);
+    size_t pixelW = CVPixelBufferGetWidth(pixelBR);
+    NSLog(@"Mark0812: Pixel [%zu, %zu, %zu, %zu]", pixelBPR, pixelSize, pixelW, pixelH);
+    
+    NSData *tmpData2 = [NSData dataWithBytes:pixelBA length:pixelSize];
+    NSLog(@"Mark0812: imgData2 [%zu]%@", pixelSize, tmpData2);
+    
+    //------------------------------------------------------------------------------------ Gen Out.mp4
+    NSError *error;
+    NSURL *fileDir = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *fileUrl2 = [fileDir URLByAppendingPathComponent:@"test3.mp4"];
+    NSLog(@"Mark0810: url2 %@", fileUrl2);
+    if ([[NSFileManager defaultManager] fileExistsAtPath:fileUrl2.path]) {
+        [[NSFileManager defaultManager] removeItemAtPath:fileUrl2.path error:&error];
+        NSLog(@"Mark0810: remove %@", error);
+    };
+    
+    //------------------------------------------------------------------------------------ Create Writer
+    error = nil;
+    AVAssetWriter *astW = [AVAssetWriter assetWriterWithURL:fileUrl2 fileType:AVFileTypeMPEG4 error:&error];
+    if (error) {
+        NSLog(@"Mark0810: error %@", error);
+        exit(2);
+    }
+    NSLog(@"Mark0810: astW %@", astW);
+    
+    //------------------------------------------------------------------------------------ Create CMSampleBufferRef
+    
+    CMVideoFormatDescriptionRef videoFDR;
+    CMVideoFormatDescriptionCreateForImageBuffer(kCFAllocatorDefault, pixelBR, &videoFDR);
+    NSLog(@"Mark0812: videoFDR %@", videoFDR);
+    
+    
+    CMSampleTimingInfo sampleTI;
+    sampleTI.presentationTimeStamp = CMTimeMake(0, 12800);
+    sampleTI.decodeTimeStamp = CMTimeMake(0, 12800);
+    sampleTI.duration = CMTimeMake(512, 12800);
+    
+    CMSampleBufferRef sampleBR;
+    CMSampleBufferCreateForImageBuffer(kCFAllocatorDefault, pixelBR, YES, NULL, NULL, videoFDR, &sampleTI, &sampleBR);
+    
+    //------------------------------------------------------------------------------------ Create Writer Input
+    NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    AVVideoCodecH264, AVVideoCodecKey,
+                                   [NSNumber numberWithInt:100], AVVideoWidthKey,
+                                   [NSNumber numberWithInt:100], AVVideoHeightKey,
+                                   nil];
+    
+    AVAssetWriterInput *astWI = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:outputSettings];
+    if ([astW canAddInput:astWI]) {
+        [astW addInput:astWI];
+    }else{
+        NSLog(@"Mark0812: Err add Input");
+        exit(7);
+    }
+    
+    [astW startWriting];
+    [astW startSessionAtSourceTime:CMTimeMake(0, 12800)];
+    
+    BOOL isEnd = NO;
+    while (!isEnd) {
+        while ([astWI isReadyForMoreMediaData]) {
+            [astWI appendSampleBuffer:sampleBR];
+            NSLog(@"Mark0812: sampleBuffer %@", sampleBR);
+            isEnd = YES;
+            break;
+        }
+        
+        usleep(200 * 1000);
+        NSLog(@"Mark0812: Sleep");
+    }
+    
+    __block BOOL shouldKeepRunning = YES;
+    [astW finishWritingWithCompletionHandler:^{
+        NSLog(@"Mark0812: Writing Finished.");
+        shouldKeepRunning = NO;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            // Trigger RunLoop Check
+        });
+    }];
+    
+    while (shouldKeepRunning && [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+    
+    NSLog(@"Mark0812: Wait End");
+    
+    //------------------------------------------------------------------------------------ Test Output file
+    _player = [[MPMoviePlayerController alloc] initWithContentURL:fileUrl2];
+    [_player prepareToPlay];
+    [_player.view setFrame:self.view.bounds];
+    [self.view addSubview:_player.view];
+    [_player play];
+}
 
+// Read Mp4's Video Sample
+- (IBAction)actionReadMp4sVS:(id)sender {
+    NSError *error;
+    //------------------------------------------------------------------------------------ Get Data
+    
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"test3" ofType:@"mp4"];
+    NSLog(@"Mark0810: path %@", filePath);
+    
+    NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
+    AVAsset *ast = [AVAsset assetWithURL:fileUrl];
+    NSLog(@"Mark0810: ast %@", ast);
+    
+    AVAssetReader *astR = [AVAssetReader assetReaderWithAsset:ast error:&error];
+    if (!astR) {
+        NSLog(@"Mark0810: astR %@", error);
+        exit(1);
+    }
+    NSLog(@"Mark0810: astR %@", astR);
+    
+    //------------------------------------------------------------------------------------  Create Reader
+    AVAssetReaderTrackOutput *astRTO;
+    __block AVAssetTrack *astT;
+    
+    NSLog(@"Mark0810: astTs %@", ast.tracks);
+    astT = [[ast tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    
+    astRTO = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:astT outputSettings:nil];
+    NSLog(@"Mark0810: astRTO %@", astRTO);
+    
+    if (![astR canAddOutput:astRTO]) {
+        exit(3);
+    }
+    [astR addOutput:astRTO];
+    NSLog(@"Mark0810: astRTO %@", astR);
+    
+    [astR startReading];
+    
+    //------------------------------------------------------------------------------------ Read Data
+    CMSampleBufferRef sampleBR;
+    size_t sampleSize = 0;
+    CMTime presentT;
+    while ((sampleBR = [astRTO copyNextSampleBuffer])) {
+        sampleSize = CMSampleBufferGetTotalSampleSize(sampleBR);
+        presentT = CMSampleBufferGetPresentationTimeStamp(sampleBR);
+        NSLog(@"Mark0812: Loop %zu [%lld %d %d %lld]", sampleSize, presentT.value, presentT.timescale, presentT.flags, presentT.epoch);
+        
+        if (sampleSize > 0) {
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                NSLog(@"Mark0812: V sampleBR %@", sampleBR);
+                
+                CVImageBufferRef imageBR = CMSampleBufferGetImageBuffer(sampleBR);
+                NSLog(@"Mark0812: V imageBR %@", imageBR);
+                
+                CMBlockBufferRef blockBR = CMSampleBufferGetDataBuffer(sampleBR);
+                NSLog(@"Mark0812: V blockBR %@", blockBR);
+            });
+        }
+    }
+    NSLog(@"Mark0812: readEnd");
+}
+
+// LinearPCM convert to Mp4
 - (IBAction)actionLpcm2Mp4:(id)sender {
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Hello" ofType:@"pcm"];
     NSLog(@"Mark0811: filePath %@", filePath);
@@ -344,6 +527,7 @@
     }
     NSLog(@"Mark0810: astW %@", astW);
     //------------------------------------------------------------------------------------ Create Writer
+    
     AudioChannelLayout acl;
     bzero(&acl, sizeof(acl));
     acl.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;

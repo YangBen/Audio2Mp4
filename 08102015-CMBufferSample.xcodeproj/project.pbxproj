@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		DE689F531B79AF13002B1578 /* Hello.pcm in Resources */ = {isa = PBXBuildFile; fileRef = DE689F521B79AF13002B1578 /* Hello.pcm */; };
+		DEA8C8F91B7B3096009419B6 /* test3.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = DEA8C8F81B7B3096009419B6 /* test3.mp4 */; };
+		DEA8C8FB1B7B39B2009419B6 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA8C8FA1B7B39B2009419B6 /* test.png */; };
 		DECCE0D31B783551003836F0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DECCE0D21B783551003836F0 /* main.m */; };
 		DECCE0D61B783551003836F0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DECCE0D51B783551003836F0 /* AppDelegate.m */; };
 		DECCE0D91B783551003836F0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DECCE0D81B783551003836F0 /* ViewController.m */; };
@@ -35,6 +37,8 @@
 		DE689F551B79EECD002B1578 /* waveCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = waveCheck.png; sourceTree = "<group>"; };
 		DE689F561B7A1F81002B1578 /* duplicatedError.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = duplicatedError.png; sourceTree = "<group>"; };
 		DE689F571B7A22BB002B1578 /* uiPreview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = uiPreview.jpg; sourceTree = "<group>"; };
+		DEA8C8F81B7B3096009419B6 /* test3.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = test3.mp4; sourceTree = "<group>"; };
+		DEA8C8FA1B7B39B2009419B6 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
 		DECCE0CD1B783551003836F0 /* 08102015-CMBufferSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "08102015-CMBufferSample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DECCE0D11B783551003836F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DECCE0D21B783551003836F0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -94,6 +98,8 @@
 		DECCE0CF1B783551003836F0 /* 08102015-CMBufferSample */ = {
 			isa = PBXGroup;
 			children = (
+				DEA8C8FA1B7B39B2009419B6 /* test.png */,
+				DEA8C8F81B7B3096009419B6 /* test3.mp4 */,
 				DE689F571B7A22BB002B1578 /* uiPreview.jpg */,
 				DE689F561B7A1F81002B1578 /* duplicatedError.png */,
 				DE689F551B79EECD002B1578 /* waveCheck.png */,
@@ -221,10 +227,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				DECCE0DC1B783551003836F0 /* Main.storyboard in Resources */,
+				DEA8C8F91B7B3096009419B6 /* test3.mp4 in Resources */,
 				DECCE0E11B783551003836F0 /* LaunchScreen.xib in Resources */,
 				DECCE0F81B7839E7003836F0 /* Hello.m4r in Resources */,
 				DECCE0DE1B783551003836F0 /* Images.xcassets in Resources */,
 				DE689F531B79AF13002B1578 /* Hello.pcm in Resources */,
+				DEA8C8FB1B7B39B2009419B6 /* test.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

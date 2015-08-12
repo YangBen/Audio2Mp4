@@ -55,6 +55,24 @@
                                     <action selector="actionLpcm2Mp4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="GJH-xg-Inb"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g3h-i1-iI0">
+                                <rect key="frame" x="16" y="248" width="248" height="30"/>
+                                <state key="normal" title="Read Mp4's Video CMSampleBuffer">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="actionReadMp4sVS:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WNI-PV-DHb"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GNq-pC-Op0">
+                                <rect key="frame" x="16" y="286" width="247" height="30"/>
+                                <state key="normal" title="Read data from png, Write to a mp4">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="actionPng2Mp4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Vmi-Tq-IeP"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
