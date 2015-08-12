@@ -98,6 +98,8 @@
     
     //------------------------------------------------------------------------------------ Write process
     BOOL isEnd = NO;
+    CMTime presentT;
+    int presentTV = 0;
     while (!isEnd) {
         while (astWI.isReadyForMoreMediaData) {
             tmpData = [fileHandler readDataOfLength:32768];
@@ -109,17 +111,22 @@
             }
 
             CMBlockBufferReplaceDataBytes(tmpData.bytes, blockBR, 0, tmpData.length);
+            presentT = CMSampleBufferGetPresentationTimeStamp(sampleBR);
+            presentTV += CMSampleBufferGetNumSamples(sampleBR);
+            presentT.value = presentTV;
+            CMSampleBufferSetOutputPresentationTimeStamp(sampleBR, presentT);
             [astWI appendSampleBuffer:sampleBR];
             
-            NSLog(@"Mark0811: Loop %lu", (unsigned long)tmpData.length);
+            NSLog(@"Mark0811: Loop %lu [%lld, %d, %d, %lld]", (unsigned long)tmpData.length, presentT.value, presentT.timescale, presentT.flags, presentT.epoch);
             if (tmpData.length < 32768) {
                 [fileHandler closeFile];
                 isEnd = YES;
                 break;
             }
             
-            usleep(2 * 1000);   // Test on iPhone4s, No need this sleep.
+            usleep(2 * 1000);   // Test on iPhone4s/6, No need this sleep.
             // if usleep(1 * 1000), or no sleep,  simulator will have duplicated audio played;
+            // Tip: Adding TimeStamp do no favor for it.
         }
         
         usleep(100 * 1000);
@@ -319,6 +326,8 @@
     //------------------------------------------------------------------------------------ Write process
     
     __block BOOL isEnd = NO;
+    CMTime presentT;
+    BOOL isOk;
     while (!isEnd) {
         while ([astWI isReadyForMoreMediaData]) {
             sampleBR = [astRTO copyNextSampleBuffer];
@@ -326,12 +335,13 @@
                 isEnd = YES;
                 break;
             }else{
-                BOOL status = [astWI appendSampleBuffer:sampleBR];
-                if (!status) {
+                presentT = CMSampleBufferGetPresentationTimeStamp(sampleBR);
+                isOk = [astWI appendSampleBuffer:sampleBR];
+                if (!isOk) {
                     NSLog(@"Mark0810: appendErr %@", astW.error);
                     sleep(1);
                 }
-                NSLog(@"Mark0810: Loop");
+                NSLog(@"Mark0810: Loop [%d, %d, %d, %d]", presentT.value, presentT.timescale, presentT.flags, presentT.epoch);
                 
                 static dispatch_once_t onceToken;
                 dispatch_once(&onceToken, ^{

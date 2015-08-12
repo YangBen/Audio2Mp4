@@ -33,6 +33,8 @@
 		DE689F521B79AF13002B1578 /* Hello.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Hello.pcm; sourceTree = "<group>"; };
 		DE689F541B79B0C1002B1578 /* fileCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fileCheck.png; sourceTree = "<group>"; };
 		DE689F551B79EECD002B1578 /* waveCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = waveCheck.png; sourceTree = "<group>"; };
+		DE689F561B7A1F81002B1578 /* duplicatedError.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = duplicatedError.png; sourceTree = "<group>"; };
+		DE689F571B7A22BB002B1578 /* uiPreview.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = uiPreview.jpg; sourceTree = "<group>"; };
 		DECCE0CD1B783551003836F0 /* 08102015-CMBufferSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "08102015-CMBufferSample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DECCE0D11B783551003836F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DECCE0D21B783551003836F0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -92,6 +94,8 @@
 		DECCE0CF1B783551003836F0 /* 08102015-CMBufferSample */ = {
 			isa = PBXGroup;
 			children = (
+				DE689F571B7A22BB002B1578 /* uiPreview.jpg */,
+				DE689F561B7A1F81002B1578 /* duplicatedError.png */,
 				DE689F551B79EECD002B1578 /* waveCheck.png */,
 				DE689F541B79B0C1002B1578 /* fileCheck.png */,
 				DECCE0FC1B783D95003836F0 /* CutLove.mp3 */,
