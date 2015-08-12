@@ -10,6 +10,9 @@
 @import AVFoundation;
 @import MediaPlayer;
 
+// if < 32768, actionAF2lpcm() will memory overflow
+#define MAX_BLOCK_SAMPLE_NUM 32768
+
 @interface ViewController ()
 {
     MPMoviePlayerController *_player;
@@ -30,9 +33,9 @@
     //------------------------------------------------------------------------------------ Read Data
     NSFileHandle *fileHandler = [NSFileHandle fileHandleForReadingAtPath:filePath];
     
-    char *tmpBytes = malloc(32768);
-    memset(tmpBytes, 0, 32768);
-    NSData *tmpData = [NSData dataWithBytes:tmpBytes length:32768];
+    char *tmpBytes = malloc(MAX_BLOCK_SAMPLE_NUM);
+    memset(tmpBytes, 0, MAX_BLOCK_SAMPLE_NUM);
+    NSData *tmpData = [NSData dataWithBytes:tmpBytes length:MAX_BLOCK_SAMPLE_NUM];
     
     //------------------------------------------------------------------------------------ Create CMBlockBufferRef
     CMBlockBufferRef blockBR;
@@ -55,8 +58,17 @@
     asbd.mBitsPerChannel = 16;
     
     CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &asbd, 0, NULL, 0, NULL, NULL, &afdr);
-    CMAudioSampleBufferCreateWithPacketDescriptions(kCFAllocatorDefault, blockBR, YES, NULL, NULL, afdr, 32768/4, CMTimeMake(0, 44100), NULL, &sampleBR);
-    NSLog(@"Mark0811: sampleBR %@", sampleBR);
+    
+    CMAudioSampleBufferCreateWithPacketDescriptions(kCFAllocatorDefault,
+                                                    blockBR,
+                                                    YES,
+                                                    NULL,
+                                                    NULL,
+                                                    afdr,
+                                                    MAX_BLOCK_SAMPLE_NUM / 4,
+                                                    CMTimeMake(0, 44100),
+                                                    NULL,
+                                                    &sampleBR);
     
     //------------------------------------------------------------------------------------ Gen Out.mp4
     NSError *error;
@@ -98,27 +110,55 @@
     
     //------------------------------------------------------------------------------------ Write process
     BOOL isEnd = NO;
-    CMTime presentT;
-    int presentTV = 0;
     while (!isEnd) {
         while (astWI.isReadyForMoreMediaData) {
-            tmpData = [fileHandler readDataOfLength:32768];
+            tmpData = [fileHandler readDataOfLength:MAX_BLOCK_SAMPLE_NUM];
             
             if (!tmpData) {
                 [fileHandler closeFile];
                 isEnd = YES;
                 break;
             }
-
+            
             CMBlockBufferReplaceDataBytes(tmpData.bytes, blockBR, 0, tmpData.length);
-            presentT = CMSampleBufferGetPresentationTimeStamp(sampleBR);
-            presentTV += CMSampleBufferGetNumSamples(sampleBR);
-            presentT.value = presentTV;
-            CMSampleBufferSetOutputPresentationTimeStamp(sampleBR, presentT);
+            
+///////////// Beta1: Audio TimeStamp is invalid to edit directly/////////////////////////////////////////////////
+//
+//            OSStatus ost;
+//            presentT = CMSampleBufferGetPresentationTimeStamp(sampleBR);
+//            presentT_v += CMSampleBufferGetNumSamples(sampleBR);
+//            presentT.value = presentT_v;
+//            ost = CMSampleBufferSetOutputPresentationTimeStamp(sampleBR, presentT);
+//            presentT = CMSampleBufferGetPresentationTimeStamp(sampleBR);
+//            // Log Print Rst: presentT no change
+//
+///////////// Beta2: Using Create SampleBuffer instead///////////////////////////////////////////////////////////
+//
+//            // define out of Loop
+//            CMTime presentT;
+//            int presentT_v = 0; // if set 44100 * 5, audio will start play at fifth second.
+//
+//            // Loop process
+//            CMAudioSampleBufferCreateWithPacketDescriptions(kCFAllocatorDefault,
+//                                                            blockBR,
+//                                                            YES,
+//                                                            NULL,
+//                                                            NULL,
+//                                                            afdr,
+//                                                            MAX_BLOCK_SAMPLE_NUM / 4,
+//                                                            CMTimeMake(presentT_v, 44100),
+//                                                            NULL,
+//                                                            &sampleBR);
+//            presentT_v += CMSampleBufferGetNumSamples(sampleBR);
+//            presentT = CMSampleBufferGetPresentationTimeStamp(sampleBR);
+//
+////////////// Beta3: Can Print timestamp rightly, but if change Time.value in middle, play time still not change.
+            
+            NSLog(@"Mark0811: Loop %lu", (unsigned long)tmpData.length);
+            
             [astWI appendSampleBuffer:sampleBR];
             
-            NSLog(@"Mark0811: Loop %lu [%lld, %d, %d, %lld]", (unsigned long)tmpData.length, presentT.value, presentT.timescale, presentT.flags, presentT.epoch);
-            if (tmpData.length < 32768) {
+            if (tmpData.length < MAX_BLOCK_SAMPLE_NUM) {
                 [fileHandler closeFile];
                 isEnd = YES;
                 break;
@@ -126,7 +166,6 @@
             
             usleep(2 * 1000);   // Test on iPhone4s/6, No need this sleep.
             // if usleep(1 * 1000), or no sleep,  simulator will have duplicated audio played;
-            // Tip: Adding TimeStamp do no favor for it.
         }
         
         usleep(100 * 1000);
@@ -150,13 +189,13 @@
 //
 //    __block BOOL shouldKeepRunning = YES;
 //    [fileHandler setReadabilityHandler:^(NSFileHandle *fh) {
-//        NSData *tmpData = [fh readDataOfLength:32768];
+//        NSData *tmpData = [fh readDataOfLength:MAX_BLOCK_SAMPLE_NUM];
 //        NSLog(@"Mark0811: Read Loop %lu", (unsigned long)tmpData.length);
 //        
 //        //-------------------------------------------------------------------------------- Create CMBlockBufferRef
 //        
 //        
-//        if (!tmpData || tmpData.length < 32768){
+//        if (!tmpData || tmpData.length < MAX_BLOCK_SAMPLE_NUM){
 //            [fh closeFile];
 //            shouldKeepRunning = NO;
 //            NSLog(@"Mark0811: Read End");
@@ -211,7 +250,7 @@
     //------------------------------------------------------------------------------------ Read Data
     CMSampleBufferRef sampleBR;
     CMBlockBufferRef blockBR;
-    char tmp[32768] = {0};
+    char tmp[MAX_BLOCK_SAMPLE_NUM] = {0};
     NSData *tmpData = nil;
     size_t tmpLength = 0;
     NSURL *fileDir = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
@@ -341,7 +380,7 @@
                     NSLog(@"Mark0810: appendErr %@", astW.error);
                     sleep(1);
                 }
-                NSLog(@"Mark0810: Loop [%d, %d, %d, %d]", presentT.value, presentT.timescale, presentT.flags, presentT.epoch);
+                NSLog(@"Mark0810: Loop [%lld, %d, %d, %lld]", presentT.value, presentT.timescale, presentT.flags, presentT.epoch);
                 
                 static dispatch_once_t onceToken;
                 dispatch_once(&onceToken, ^{
