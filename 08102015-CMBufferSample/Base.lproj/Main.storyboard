@@ -73,6 +73,15 @@
                                     <action selector="actionPng2Mp4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Vmi-Tq-IeP"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dFL-V2-jMC">
+                                <rect key="frame" x="16" y="324" width="225" height="30"/>
+                                <state key="normal" title="Read Png&amp;Lpcm, Write to a mp4">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="actionPngPcm2Mp4:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1jC-uL-2Ud"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
