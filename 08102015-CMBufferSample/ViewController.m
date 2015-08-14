@@ -11,7 +11,7 @@
 @import MediaPlayer;
 
 // if < 32768, actionAF2lpcm() will memory overflow
-#define MAX_BLOCK_SAMPLE_NUM 32768
+#define MAX_BLOCK_SAMPLE_SIZE 32768
 
 @interface ViewController ()
 {
@@ -24,6 +24,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+// Read G711 file data , write to a Mp4 ile
+- (IBAction)actionAlaw2Mp4:(id)sender {
+    // TODO: ~~
+    // 1. Can not Read a m4r file with AVAssetReaderOutput's output setting is uncompresssed format
+    // 2. Can not Write raw g711 data to a mp4 file with AVAssetWriteInput's input setting is uncompressed format
+    // 3. Apple's AVAsset Reencoding Process can only read a compressed format to an uncompressed ReaderOutputObj, and then write to another compressed WriterInputObj
 }
 
 // Read Data from png file and pcm file, write to a mp4
@@ -64,9 +72,9 @@
     //------------------------------------------------------------------------------------ read pcm
     NSFileHandle *fileHandler = [NSFileHandle fileHandleForReadingAtPath:filePath];
     
-    char *tmpBytes = malloc(MAX_BLOCK_SAMPLE_NUM);
-    memset(tmpBytes, 0, MAX_BLOCK_SAMPLE_NUM);
-    NSData *tmpData_pcm = [NSData dataWithBytes:tmpBytes length:MAX_BLOCK_SAMPLE_NUM];
+    char *tmpBytes = malloc(MAX_BLOCK_SAMPLE_SIZE);
+    memset(tmpBytes, 0, MAX_BLOCK_SAMPLE_SIZE);
+    NSData *tmpData_pcm = [NSData dataWithBytes:tmpBytes length:MAX_BLOCK_SAMPLE_SIZE];
     
     //------------------------------------------------------------------------------------ Create Audio CMBlockBufferRef
     CMBlockBufferRef blockBR;
@@ -169,7 +177,7 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         CMTime presentT;
-        CMTimeValue presentV = 0;
+        CMTimeValue presentV = 0 * 44100;
         NSData *tmpData;
         BOOL appendRst;
         
@@ -190,9 +198,23 @@
         CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &asbd, 0, NULL, 0, NULL, NULL, &afdr);
         
         //------------------------------------------------------------------------------------ Write A
+        NSData *emptyData = [NSData dataWithBytes:tmpBytes length:MAX_BLOCK_SAMPLE_SIZE];
         while (!isEnd_a) {
             while (astWI_a.isReadyForMoreMediaData) {
-                tmpData = [fileHandler readDataOfLength:MAX_BLOCK_SAMPLE_NUM];
+                
+////////////////////Origin Code: Normal
+//                
+//                tmpData = [fileHandler readDataOfLength:MAX_BLOCK_SAMPLE_SIZE];
+//  
+////////////////////Beta Code: write 10s empty audio in middle
+//
+                if (presentV > 44100 * 10 && presentV < 44100 * 20) {
+                    tmpData = emptyData;
+                }else{
+                    tmpData = [fileHandler readDataOfLength:MAX_BLOCK_SAMPLE_SIZE];
+                }
+//
+/////////////////////////////////////////////////////////////////////////////////
                 
                 if (!tmpData) {
                     [fileHandler closeFile];
@@ -207,7 +229,7 @@
                                                                 NULL,
                                                                 NULL,
                                                                 afdr,
-                                                                MAX_BLOCK_SAMPLE_NUM / 4,
+                                                                MAX_BLOCK_SAMPLE_SIZE / 4,
                                                                 CMTimeMake(presentV, 44100),
                                                                 NULL,
                                                                 &sampleBR_a);
@@ -219,7 +241,7 @@
                 appendRst = [astWI_a appendSampleBuffer:sampleBR_a];
                 NSLog(@"Mark0811: Loop_a %lld %d", presentT.value,  appendRst);
                 
-                if (tmpData.length < MAX_BLOCK_SAMPLE_NUM) {
+                if (tmpData.length < MAX_BLOCK_SAMPLE_SIZE) {
                     [fileHandler closeFile];
                     isEnd_a = YES;
                     checkEnd();
@@ -278,6 +300,7 @@
     
     while (shouldKeepRunning && [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
     
+    free(tmpBytes);
     NSLog(@"Mark0813: Wait End");
     
     //------------------------------------------------------------------------------------ Test Output file
@@ -521,9 +544,9 @@
     //------------------------------------------------------------------------------------ Read Data
     NSFileHandle *fileHandler = [NSFileHandle fileHandleForReadingAtPath:filePath];
     
-    char *tmpBytes = malloc(MAX_BLOCK_SAMPLE_NUM);
-    memset(tmpBytes, 0, MAX_BLOCK_SAMPLE_NUM);
-    NSData *tmpData = [NSData dataWithBytes:tmpBytes length:MAX_BLOCK_SAMPLE_NUM];
+    char *tmpBytes = malloc(MAX_BLOCK_SAMPLE_SIZE);
+    memset(tmpBytes, 0, MAX_BLOCK_SAMPLE_SIZE);
+    NSData *tmpData = [NSData dataWithBytes:tmpBytes length:MAX_BLOCK_SAMPLE_SIZE];
     
     //------------------------------------------------------------------------------------ Create CMBlockBufferRef
     CMBlockBufferRef blockBR;
@@ -553,8 +576,8 @@
                                                     NULL,
                                                     NULL,
                                                     afdr,
-                                                    MAX_BLOCK_SAMPLE_NUM / 4,
-                                                    CMTimeMake(0, 44100),
+                                                    MAX_BLOCK_SAMPLE_SIZE / 4,
+                                                    CMTimeMake(44100 * 0, 44100),
                                                     NULL,
                                                     &sampleBR);
     
@@ -600,7 +623,7 @@
     BOOL isEnd = NO;
     while (!isEnd) {
         while (astWI.isReadyForMoreMediaData) {
-            tmpData = [fileHandler readDataOfLength:MAX_BLOCK_SAMPLE_NUM];
+            tmpData = [fileHandler readDataOfLength:MAX_BLOCK_SAMPLE_SIZE];
             
             if (!tmpData) {
                 [fileHandler closeFile];
@@ -633,7 +656,7 @@
 //                                                            NULL,
 //                                                            NULL,
 //                                                            afdr,
-//                                                            MAX_BLOCK_SAMPLE_NUM / 4,
+//                                                            MAX_BLOCK_SAMPLE_SIZE / 4,
 //                                                            CMTimeMake(presentT_v, 44100),
 //                                                            NULL,
 //                                                            &sampleBR);
@@ -646,7 +669,7 @@
             
             [astWI appendSampleBuffer:sampleBR];
             
-            if (tmpData.length < MAX_BLOCK_SAMPLE_NUM) {
+            if (tmpData.length < MAX_BLOCK_SAMPLE_SIZE) {
                 [fileHandler closeFile];
                 isEnd = YES;
                 break;
@@ -677,13 +700,13 @@
 //
 //    __block BOOL shouldKeepRunning = YES;
 //    [fileHandler setReadabilityHandler:^(NSFileHandle *fh) {
-//        NSData *tmpData = [fh readDataOfLength:MAX_BLOCK_SAMPLE_NUM];
+//        NSData *tmpData = [fh readDataOfLength:MAX_BLOCK_SAMPLE_SIZE];
 //        NSLog(@"Mark0811: Read Loop %lu", (unsigned long)tmpData.length);
 //        
 //        //-------------------------------------------------------------------------------- Create CMBlockBufferRef
 //        
 //        
-//        if (!tmpData || tmpData.length < MAX_BLOCK_SAMPLE_NUM){
+//        if (!tmpData || tmpData.length < MAX_BLOCK_SAMPLE_SIZE){
 //            [fh closeFile];
 //            shouldKeepRunning = NO;
 //            NSLog(@"Mark0811: Read End");
@@ -699,7 +722,7 @@
 // Audio File convert to LinearPCM file
 - (IBAction)actionAF2Lpcm:(id)sender {
     NSError *error;
-    //------------------------------------------------------------------------------------ Gen Data
+    //------------------------------------------------------------------------------------ Open File
     
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Hello" ofType:@"m4r"];
     NSLog(@"Mark0810: path %@", filePath);
@@ -738,7 +761,7 @@
     //------------------------------------------------------------------------------------ Read Data
     CMSampleBufferRef sampleBR;
     CMBlockBufferRef blockBR;
-    char tmp[MAX_BLOCK_SAMPLE_NUM] = {0};
+    char tmp[MAX_BLOCK_SAMPLE_SIZE] = {0};
     NSData *tmpData = nil;
     size_t tmpLength = 0;
     NSURL *fileDir = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
